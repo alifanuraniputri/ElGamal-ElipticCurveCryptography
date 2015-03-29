@@ -1,17 +1,17 @@
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -20,6 +20,11 @@ import javax.swing.SwingUtilities;
 
 public class ElGamalECC extends JApplet {
 
+	/* Cryptography */
+	private byte[] input;
+	private byte[] output;
+
+	/* GUI */
 	JButton fileBtn;
 	JTextArea inputTextArea;
 	JTextArea outputTextArea;
@@ -27,7 +32,6 @@ public class ElGamalECC extends JApplet {
 	JButton encryptButton;
 	JButton decryptButton;
 	JButton saveCipher;
-	byte[] fileData;
 
 	public void init() {
 		try {
@@ -55,29 +59,34 @@ public class ElGamalECC extends JApplet {
 
 	}
 
-	// Setup and initialize the GUI.
 	private void guiInit() {
 
+		/** Frame **/
 		Frame c = (Frame) this.getParent().getParent();
 		c.setTitle("El Gamal Eliptic Curve Cryptography");
 		getContentPane().setLayout(null);
+		/* ! Frame ! */
 
+		/** Label **/
 		JLabel inputLabel;
 		inputLabel = new JLabel("Input File");
 		inputLabel.setBounds(20, 10, 100, 30);
 		inputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		/* ! Label ! */
 
+		/** Select File **/
 		fileBtn = new JButton("Select File ");
 		fileBtn.setBackground(Color.PINK);
 		fileBtn.setBounds(90, 10, 120, 33);
 		fileBtn.setOpaque(true);
 		fileBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO read file
+				readInput();
 			}
 		});
+		/* ! Select File */
 
-		// Plain Text
+		/** Input File **/
 		inputTextArea = new JTextArea();
 		inputTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		inputTextArea.setLineWrap(true);
@@ -90,8 +99,9 @@ public class ElGamalECC extends JApplet {
 		JScrollPane scroll = new JScrollPane(inputTextArea);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroll.setBounds(20, 60, 560, 130);
+		/* ! Input File ! */
 
-		// Kata Kunci
+		/** Kunci **/
 		JLabel kunciLabel = new JLabel("Kata Kunci");
 		kunciLabel.setBounds(20, 200, 100, 30);
 		kunciLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -99,7 +109,9 @@ public class ElGamalECC extends JApplet {
 		kunciTextField = new JTextField();
 		kunciTextField.setBounds(20, 230, 560, 30);
 		kunciTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		/* ! Kunci ! */
 
+		/** Enkripsi **/
 		encryptButton = new JButton("Enkripsi");
 		encryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -109,7 +121,9 @@ public class ElGamalECC extends JApplet {
 		encryptButton.setBackground(Color.PINK);
 		encryptButton.setBounds(20, 300, 80, 30);
 		encryptButton.setOpaque(true);
+		/* ! Enkripsi ! */
 
+		/** Dekripsi **/
 		decryptButton = new JButton("Dekripsi");
 		decryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -119,12 +133,13 @@ public class ElGamalECC extends JApplet {
 		decryptButton.setBackground(Color.PINK);
 		decryptButton.setBounds(110, 300, 80, 30);
 		decryptButton.setOpaque(true);
+		/** Dekripsi **/
 
+		/** Output **/
 		JLabel outputLabel = new JLabel("Output Text");
 		outputLabel.setBounds(20, 340, 100, 30);
 		outputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 
-		// output text area
 		outputTextArea = new JTextArea();
 		outputTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		outputTextArea.setLineWrap(true);
@@ -136,15 +151,18 @@ public class ElGamalECC extends JApplet {
 		JScrollPane scroll2 = new JScrollPane(outputTextArea);
 		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroll2.setBounds(20, 380, 560, 130);
+		/* ! Output ! */
 
+		/** Save **/
 		saveCipher = new JButton("Save Cipher to File");
 		saveCipher.setBounds(20, 550, 200, 30);
 		saveCipher.setEnabled(false);
 		saveCipher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO save 
+				saveOutput();
 			}
 		});
+		/* ! Save ! */
 
 		getContentPane().add(fileBtn);
 		getContentPane().add(inputLabel);
@@ -159,9 +177,40 @@ public class ElGamalECC extends JApplet {
 
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public void readInput() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				final JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					try {
+						input = Files.readAllBytes(file.toPath());
+					} catch (IOException e1) {
 
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 
+	public void saveOutput() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				final JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					try {
+						Files.write(file.toPath(), output);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		
+		});
+	}
 }
