@@ -16,11 +16,14 @@ import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class UI extends JApplet {
 	
@@ -79,7 +82,7 @@ public class UI extends JApplet {
 		/** Select File **/
 		fileBtn = new JButton("Select File ");
 		fileBtn.setBackground(Color.PINK);
-		fileBtn.setBounds(90, 10, 120, 33);
+		fileBtn.setBounds(90, 10, 120, 30);
 		fileBtn.setOpaque(true);
 		fileBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -117,7 +120,11 @@ public class UI extends JApplet {
 		encryptButton = new JButton("Enkripsi");
 		encryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO encrypt with ElGamal ECC
+				if (!kunciTextField.getText().equals("")) {
+					elgamalECC.encrypt();
+					saveCipher.setEnabled(true);
+				} else 
+					JOptionPane.showMessageDialog(getContentPane(), "kunci harus terisi");
 			}
 		});
 		encryptButton.setBackground(Color.PINK);
@@ -129,7 +136,11 @@ public class UI extends JApplet {
 		decryptButton = new JButton("Dekripsi");
 		decryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO decrypt with ElGamal ECC
+				if (!kunciTextField.getText().equals("")) {
+					elgamalECC.decrypt();
+					saveCipher.setEnabled(true);
+				} else 
+					JOptionPane.showMessageDialog(getContentPane(), "kunci harus terisi");
 			}
 		});
 		decryptButton.setBackground(Color.PINK);
@@ -156,7 +167,7 @@ public class UI extends JApplet {
 		/* ! Output ! */
 
 		/** Save **/
-		saveCipher = new JButton("Save Cipher to File");
+		saveCipher = new JButton("Save Output to File");
 		saveCipher.setBounds(20, 550, 200, 30);
 		saveCipher.setEnabled(false);
 		saveCipher.addActionListener(new ActionListener() {
@@ -176,6 +187,8 @@ public class UI extends JApplet {
 		getContentPane().add(scroll2);
 		getContentPane().add(outputLabel);
 		getContentPane().add(saveCipher);
+		encryptButton.setEnabled(false);
+		decryptButton.setEnabled(false);
 
 		elgamalECC = new ElGamalECC();
 	}
@@ -187,6 +200,9 @@ public class UI extends JApplet {
 				final JFileChooser fileChooser = new JFileChooser();
 				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
+					FileFilter filter = new FileNameExtensionFilter(
+							"Text", "txt");
+					fileChooser.setFileFilter(filter);
 					try {
 						BufferedReader br = new BufferedReader(new FileReader(
 								file));
@@ -200,6 +216,10 @@ public class UI extends JApplet {
 						String input = sb.toString();
 						elgamalECC.setInput(input);
 						br.close();
+						inputTextArea.setText(input);
+						encryptButton.setEnabled(true);
+						decryptButton.setEnabled(true);
+						saveCipher.setEnabled(false);
 					} catch (IOException e1) {
 
 						e1.printStackTrace();

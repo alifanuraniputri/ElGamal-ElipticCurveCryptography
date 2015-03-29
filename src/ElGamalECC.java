@@ -28,11 +28,11 @@ public class ElGamalECC {
 	}
 	
 	public void encrypt() {
-		
+		// TODO all encryption
 	}
 	
 	public void decrypt() {
-		
+		// TODO all decryption
 	}
 
 	public String getInput() {
