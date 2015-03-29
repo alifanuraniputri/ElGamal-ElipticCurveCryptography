@@ -219,7 +219,6 @@ public class UI extends JApplet {
 			}
 		});
 		/* ! Save ! */
-
 		getContentPane().add(fileBtn);
 		getContentPane().add(inputLabel);
 		getContentPane().add(scroll);
