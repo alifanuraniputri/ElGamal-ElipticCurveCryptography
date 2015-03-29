@@ -33,7 +33,11 @@ public class UI extends JApplet {
 	JButton fileBtn;
 	JTextArea inputTextArea;
 	JTextArea outputTextArea;
-	JTextField kunciTextField;
+	JTextField kunciPublicTextField;
+	JTextField kunciPrivateTextField;
+	JButton browsePrivateKey;
+	JButton browsePublicKey;
+	JButton saveKey;
 	JButton encryptButton;
 	JButton decryptButton;
 	JButton saveCipher;
@@ -107,20 +111,59 @@ public class UI extends JApplet {
 		/* ! Input File ! */
 
 		/** Kunci **/
-		JLabel kunciLabel = new JLabel("Kata Kunci");
-		kunciLabel.setBounds(20, 220, 100, 30);
-		kunciLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel kunciPrivateLabel = new JLabel("Kunci Private");
+		kunciPrivateLabel.setBounds(20, 220, 80, 30);
+		kunciPrivateLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JLabel kunciPublicLabel = new JLabel("Kunci Public");
+		kunciPublicLabel.setBounds(205, 220, 80, 30);
+		kunciPublicLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		browsePrivateKey = new JButton("browse");
+		browsePrivateKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		browsePrivateKey.setBackground(Color.PINK);
+		browsePrivateKey.setBounds(110, 220, 80, 30);
+		browsePrivateKey.setOpaque(true);
+		
+		browsePublicKey = new JButton("browse");
+		browsePublicKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		browsePublicKey.setBackground(Color.PINK);
+		browsePublicKey.setBounds(295, 220, 80, 30);
+		browsePublicKey.setOpaque(true);
 
-		kunciTextField = new JTextField();
-		kunciTextField.setBounds(20, 250, 460, 30);
-		kunciTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		kunciPrivateTextField = new JTextField();
+		kunciPrivateTextField.setBounds(20, 255, 170, 30);
+		kunciPrivateTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		kunciPublicTextField = new JTextField();
+		kunciPublicTextField.setBounds(205, 255, 275, 30);
+		kunciPublicTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		saveKey = new JButton("Simpan Kunci");
+		saveKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		saveKey.setBackground(Color.PINK);
+		saveKey.setBounds(200, 300, 100, 30);
+		saveKey.setOpaque(true);
+		
 		/* ! Kunci ! */
 
 		/** Enkripsi **/
 		encryptButton = new JButton("Enkripsi");
 		encryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!kunciTextField.getText().equals("")) {
+				if (!kunciPrivateTextField.getText().equals("") || !kunciPublicTextField.getText().equals("")) {
 					elgamalECC.encrypt();
 					saveCipher.setEnabled(true);
 				} else 
@@ -136,7 +179,7 @@ public class UI extends JApplet {
 		decryptButton = new JButton("Dekripsi");
 		decryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (!kunciTextField.getText().equals("")) {
+				if (!kunciPrivateTextField.getText().equals("") || !kunciPublicTextField.getText().equals("")) {
 					elgamalECC.decrypt();
 					saveCipher.setEnabled(true);
 				} else 
@@ -168,7 +211,7 @@ public class UI extends JApplet {
 
 		/** Save **/
 		saveCipher = new JButton("Save Output to File");
-		saveCipher.setBounds(20, 550, 200, 30);
+		saveCipher.setBounds(20, 535, 200, 30);
 		saveCipher.setEnabled(false);
 		saveCipher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -180,13 +223,18 @@ public class UI extends JApplet {
 		getContentPane().add(fileBtn);
 		getContentPane().add(inputLabel);
 		getContentPane().add(scroll);
-		getContentPane().add(kunciLabel);
-		getContentPane().add(kunciTextField);
+		getContentPane().add(kunciPrivateLabel);
+		getContentPane().add(kunciPublicLabel);
+		getContentPane().add(kunciPublicTextField);
+		getContentPane().add(kunciPrivateTextField);
 		getContentPane().add(encryptButton);
 		getContentPane().add(decryptButton);
+		getContentPane().add(browsePrivateKey);
+		getContentPane().add(browsePublicKey);
 		getContentPane().add(scroll2);
 		getContentPane().add(outputLabel);
 		getContentPane().add(saveCipher);
+		getContentPane().add(saveKey);
 		encryptButton.setEnabled(false);
 		decryptButton.setEnabled(false);
 
@@ -200,9 +248,6 @@ public class UI extends JApplet {
 				final JFileChooser fileChooser = new JFileChooser();
 				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
-					FileFilter filter = new FileNameExtensionFilter(
-							"Text", "txt");
-					fileChooser.setFileFilter(filter);
 					try {
 						BufferedReader br = new BufferedReader(new FileReader(
 								file));
