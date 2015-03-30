@@ -35,6 +35,11 @@ public class UI extends JApplet {
 	JTextArea outputTextArea;
 	JTextField kunciPublicTextField;
 	JTextField kunciPrivateTextField;
+	JTextField param_a;
+	JTextField param_b;
+	JTextField param_p;
+	JTextField param_Bx;
+	JTextField param_By;
 	JButton browsePrivateKey;
 	JButton browsePublicKey;
 	JButton saveKey;
@@ -74,6 +79,7 @@ public class UI extends JApplet {
 		Frame c = (Frame) this.getParent().getParent();
 		c.setTitle("El Gamal Eliptic Curve Cryptography");
 		getContentPane().setLayout(null);
+		getContentPane().setBackground(Color.WHITE);
 		/* ! Frame ! */
 
 		/** Label **/
@@ -107,7 +113,7 @@ public class UI extends JApplet {
 
 		JScrollPane scroll = new JScrollPane(inputTextArea);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroll.setBounds(20, 60, 460, 150);
+		scroll.setBounds(20, 60, 560, 150);
 		/* ! Input File ! */
 
 		/** Kunci **/
@@ -144,7 +150,7 @@ public class UI extends JApplet {
 		kunciPrivateTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		kunciPublicTextField = new JTextField();
-		kunciPublicTextField.setBounds(205, 255, 275, 30);
+		kunciPublicTextField.setBounds(205, 255, 375, 30);
 		kunciPublicTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		saveKey = new JButton("Simpan Kunci");
@@ -154,10 +160,55 @@ public class UI extends JApplet {
 			}
 		});
 		saveKey.setBackground(Color.PINK);
-		saveKey.setBounds(200, 300, 100, 30);
-		saveKey.setOpaque(true);
-		
+		saveKey.setBounds(200, 350, 100, 30);
+		saveKey.setOpaque(true);	
 		/* ! Kunci ! */
+		
+		/** Parameter **/
+		JLabel parameter = new JLabel("Parameter ");
+		parameter.setBounds(20, 290, 80, 20);
+		parameter.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JLabel label_a = new JLabel("a : ");
+		label_a.setBounds(20, 310, 30, 30);
+		label_a.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		param_a = new JTextField();
+		param_a.setBounds(50, 310, 50, 30);
+		param_a.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		JLabel label_b = new JLabel("b : ");
+		label_b.setBounds(140, 310, 30, 30);
+		label_b.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		param_b = new JTextField();
+		param_b.setBounds(160, 310, 50, 30);
+		param_b.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		JLabel label_p = new JLabel("p : ");
+		label_p.setBounds(250, 310, 30, 30);
+		label_p.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		param_p = new JTextField();
+		param_p.setBounds(270, 310, 50, 30);
+		param_p.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		JLabel label_Bx = new JLabel("xB : ");
+		label_Bx.setBounds(360, 310, 30, 30);
+		label_Bx.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		param_Bx = new JTextField();
+		param_Bx.setBounds(400, 310, 50, 30);
+		param_Bx.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		JLabel label_By = new JLabel("yB : ");
+		label_By.setBounds(460, 310, 30, 30);
+		label_By.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		param_By = new JTextField();
+		param_By.setBounds(500, 310, 50, 30);
+		param_By.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		/*! Parameter !*/
 
 		/** Enkripsi **/
 		encryptButton = new JButton("Enkripsi");
@@ -171,7 +222,7 @@ public class UI extends JApplet {
 			}
 		});
 		encryptButton.setBackground(Color.PINK);
-		encryptButton.setBounds(20, 300, 80, 30);
+		encryptButton.setBounds(20, 350, 80, 30);
 		encryptButton.setOpaque(true);
 		/* ! Enkripsi ! */
 
@@ -187,13 +238,13 @@ public class UI extends JApplet {
 			}
 		});
 		decryptButton.setBackground(Color.PINK);
-		decryptButton.setBounds(110, 300, 80, 30);
+		decryptButton.setBounds(110, 350, 80, 30);
 		decryptButton.setOpaque(true);
 		/** Dekripsi **/
 
 		/** Output **/
 		JLabel outputLabel = new JLabel("Output Text");
-		outputLabel.setBounds(20, 340, 100, 30);
+		outputLabel.setBounds(20, 390, 100, 30);
 		outputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 
 		outputTextArea = new JTextArea();
@@ -206,13 +257,14 @@ public class UI extends JApplet {
 
 		JScrollPane scroll2 = new JScrollPane(outputTextArea);
 		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroll2.setBounds(20, 380, 460, 150);
+		scroll2.setBounds(20, 430, 560, 150);
 		/* ! Output ! */
 
 		/** Save **/
 		saveCipher = new JButton("Save Output to File");
-		saveCipher.setBounds(20, 535, 200, 30);
+		saveCipher.setBounds(20, 585, 200, 30);
 		saveCipher.setEnabled(false);
+		saveCipher.setBackground(Color.PINK);
 		saveCipher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveOutput();
@@ -234,6 +286,17 @@ public class UI extends JApplet {
 		getContentPane().add(outputLabel);
 		getContentPane().add(saveCipher);
 		getContentPane().add(saveKey);
+		getContentPane().add(label_a);
+		getContentPane().add(label_b);
+		getContentPane().add(label_p);
+		getContentPane().add(label_Bx);
+		getContentPane().add(label_By);
+		getContentPane().add(param_a);
+		getContentPane().add(param_b);
+		getContentPane().add(param_p);
+		getContentPane().add(param_Bx);
+		getContentPane().add(param_By);
+		getContentPane().add(parameter);
 		encryptButton.setEnabled(false);
 		decryptButton.setEnabled(false);
 
