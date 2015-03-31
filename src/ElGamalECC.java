@@ -66,7 +66,7 @@ public class ElGamalECC {
 	/*public byte[] fullPointToByte(Point[] poinInput) {
 		byte[] arrayByte = new byte[poinInput.length*2];
 		for (int i=0,j=1; j<arrayByte.length; i+2, j+2) {
-			arrayByte[i] = 
+			arrayByte[i] 
 		}
 	}*/
 	
