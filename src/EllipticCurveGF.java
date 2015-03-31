@@ -85,12 +85,19 @@ public class EllipticCurveGF {
 	}
 
 	public int inv_modulo(int n, int m) {
+		if ((n % m ==0 || m % n ==0) && n !=0 && m !=0) {
+			if (n>m) {
+				n = n/m;
+				m = 1;
+			} else {
+				m = m/n;
+				n=1;
+			}
+		}
 		BigInteger bi1 = new BigInteger(Integer.toString(n));
 		BigInteger bi2 = new BigInteger(Integer.toString(m));
 
 		// perform modInverse operation on bi1 using bi2
-		System.out.println(n);
-		System.out.println(m);
 		BigInteger bi3 = bi1.modInverse(bi2);
 		return bi3.intValue();
 	}

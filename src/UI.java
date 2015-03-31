@@ -3,8 +3,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
-
-import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +12,10 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JApplet;
@@ -73,6 +71,7 @@ public class UI extends JApplet {
 	JRadioButton encryptRadio = new JRadioButton("Encrypt", true);
 	JRadioButton decryptRadio = new JRadioButton("Decrypt");
 	JLabel notifLabel;
+	String inputString;
 
 	private String[] title = { "Generate Key", "Encrypt & Decrypt" };
 
@@ -218,7 +217,16 @@ public class UI extends JApplet {
 					}
 					outputTextArea.setText(encypted);
 				} else {
-					;
+					String[] lines = inputString.split("\n");
+					Tuple tuples[] = new Tuple[lines.length];
+
+					for (int i=0; i<lines.length; i++) {
+						Scanner in = new Scanner(lines[i]);
+						tuples[i] = new Tuple();
+						tuples[i].setP1(new Point(in.nextInt(),in.nextInt()));
+						tuples[i].setP2(new Point(in.nextInt(),in.nextInt()));
+					}
+					elgamalECC.setTupleOutput(tuples);
 					elgamalECC.decrypt();
 				}
 				saveCipher.setEnabled(true);
@@ -457,9 +465,9 @@ public class UI extends JApplet {
 							sb.append(System.lineSeparator());
 							line = br.readLine();
 						}
-						String input = sb.toString();
+						inputString = sb.toString();
 						br.close();
-						inputTextArea.setText(input);
+						inputTextArea.setText(inputString);
 						encryptdecryptButton.setEnabled(true);
 						saveCipher.setEnabled(false);
 						// TODO read as byte array set to elGamalECC input
@@ -492,7 +500,7 @@ public class UI extends JApplet {
 							bw.write(elgamalECC.getTupleOutput()[i].toString());
 							bw.write("\n");
 						}
-						
+						bw.close();
 						JOptionPane.showMessageDialog(getContentPane(),
 								"Cipher Tersimpan");
 					} catch (Exception e1) {

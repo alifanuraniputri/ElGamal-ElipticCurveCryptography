@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.util.Random;
 
 
@@ -8,8 +9,8 @@ public class ElGamalECC {
 	private Byte input[];
 	private Byte output[];
 	private Point poinInput[];
-	private Tuple tupleOutput[];
 	private Point poinOutput[];
+	private Tuple tuples[];
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
 	private int privateKey;
@@ -25,21 +26,33 @@ public class ElGamalECC {
 	
 	
 	public void encrypt() {
+		printInput();
 		Random rand = new Random();
 
 		int  k = rand.nextInt(ellipticCurveGF.getP()) + 1;
-	    tupleOutput = new Tuple[this.poinInput.length];
+	    tuples = new Tuple[this.poinInput.length];
 	    System.out.println(titikBasis);
 	    System.out.println(Integer.toString(k));
 		for (int i=0; i< poinInput.length; i++) {
-			tupleOutput[i] = new Tuple();
-			tupleOutput[i].setP1(ellipticCurveGF.perkalianPoin(k, titikBasis));
-			tupleOutput[i].setP2(ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey)));
+			tuples[i] = new Tuple();
+			tuples[i].setP1(ellipticCurveGF.perkalianPoin(k, titikBasis));
+			tuples[i].setP2(ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey)));
 		}
 	}
 	
 	public void decrypt() {
-		// TODO all decryption
+		poinOutput = new Point[tuples.length];
+		for (int i=0; i< tuples.length; i++) {
+			poinOutput[i] = new Point();
+			Point point = new Point();
+			System.out.println("p1: "+tuples[i].getP1());
+			point = ellipticCurveGF.perkalianPoin(privateKey, tuples[i].getP1());
+			poinOutput[i] = ellipticCurveGF.penguranganPoin(tuples[i].getP2(), point);
+		}
+		printOutput();
+		
+		Point p1 = new Point(1, 2);
+		System.out.println(ellipticCurveGF.perkalianPoin(2, p1).toString());
 	}
 
 	public int[] getInputASCIIs() {
@@ -144,22 +157,12 @@ public class ElGamalECC {
 
 
 	public Tuple[] getTupleOutput() {
-		return tupleOutput;
+		return tuples;
 	}
 
 
 	public void setTupleOutput(Tuple[] tupleOutput) {
-		this.tupleOutput = tupleOutput;
-	}
-
-
-	public Point[] getPoinOutput() {
-		return poinOutput;
-	}
-
-
-	public void setPoinOutput(Point[] poinOutput) {
-		this.poinOutput = poinOutput;
+		this.tuples = tupleOutput;
 	}
 
 
@@ -172,6 +175,30 @@ public class ElGamalECC {
 		this.ellipticCurveGF = ellipticCurveGF;
 	}
 
+
+	public Point[] getPoinOutput() {
+		return poinOutput;
+	}
+
+
+	public void setPoinOutput(Point[] poinOutput) {
+		this.poinOutput = poinOutput;
+	}
+
+	public void printInput() {
+		System.out.println("_________INPUT_______");
+		for (int i=0; i<poinInput.length; i++) {
+			System.out.println(poinInput[i].toString());
+		}
+		System.out.println("_________INPUT_______");
+	}
 	
+	public void printOutput() {
+		System.out.println("_________OUTPUT_______");
+		for (int i=0; i<poinOutput.length; i++) {
+			System.out.println(poinOutput[i].toString());
+		}
+		System.out.println("_________OUTPUT_______");
+	}
 	
 }
