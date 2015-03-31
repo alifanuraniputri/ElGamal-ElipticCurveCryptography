@@ -134,7 +134,7 @@ public class EllipticCurveGF {
             try {
                 databyte = Files.readAllBytes(file.toPath());
             } catch (IOException ex) {
-                ex.printStackTrace();
+            	Logger.getLogger(EllipticCurveGF.class.getName()).log(Level.SEVERE, null, ex);
             }
             return databyte;
 	}
