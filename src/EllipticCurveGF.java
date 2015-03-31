@@ -15,7 +15,6 @@ public class EllipticCurveGF {
 	int k;
 	int p; // prime
 	
-
 	public EllipticCurveGF() {
 		// default value
 		a = 1;

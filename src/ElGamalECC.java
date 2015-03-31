@@ -24,7 +24,7 @@ public class ElGamalECC {
 	}
 	
 	
-	public void encodeInput() {
+	public void encrypt() {
 		Random rand = new Random();
 	    int k = rand.nextInt((ellipticCurveGF.getP() - 1) + 1) + 1;
 	    tupleOutput = new Tuple[poinInput.length];
@@ -35,14 +35,6 @@ public class ElGamalECC {
 			tupleOutput[i].setP2(y);
 
 		}
-	}
-	
-	public void decodeInput() {
-		// TODO array point to byte array
-	}
-	
-	public void encrypt() {
-		// TODO all encryption
 	}
 	
 	public void decrypt() {
