@@ -212,6 +212,11 @@ public class UI extends JApplet {
 			public void actionPerformed(ActionEvent arg0) {
 				if (isEncrypt) {
 					elgamalECC.encrypt();
+					String encypted="";
+					for (int i=0; i< elgamalECC.getTupleOutput().length; i++) {
+						encypted = encypted + "\n" + elgamalECC.getTupleOutput()[i].toString();
+					}
+					outputTextArea.setText(encypted);
 				} else {
 					;
 					elgamalECC.decrypt();
@@ -478,7 +483,17 @@ public class UI extends JApplet {
 				if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
 					try {
-						// TODO write output
+						FileWriter out;
+						out = new FileWriter(fileChooser.getSelectedFile()
+								.getAbsolutePath());
+						BufferedWriter bw = new BufferedWriter(out);
+						for (int i=0; i< elgamalECC.getTupleOutput().length; i++) {
+							bw.write(elgamalECC.getTupleOutput()[i].toString());
+							bw.write("\n");
+						}
+						
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Cipher Tersimpan");
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -597,7 +612,6 @@ public class UI extends JApplet {
 						String s;
 						br = new BufferedReader(new FileReader(file));
 						EllipticCurveGF elCurve = new EllipticCurveGF();
-						elgamalECC = new ElGamalECC();
 						if (isEncrypt && fileChooser.getSelectedFile().getAbsolutePath()
 								.contains(".pub")) {
 							Point p = new Point();

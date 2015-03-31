@@ -26,14 +26,14 @@ public class ElGamalECC {
 	
 	public void encrypt() {
 		Random rand = new Random();
-	    int k = rand.nextInt((ellipticCurveGF.getP() - 1) + 1) + 1;
-	    tupleOutput = new Tuple[poinInput.length];
-		for (int i=0; i< poinInput.length; i++) {
-			Point x = ellipticCurveGF.perkalianPoin(k, titikBasis);
-			Point y = ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey));
-			tupleOutput[i].setP1(x);
-			tupleOutput[i].setP2(y);
 
+		int  k = rand.nextInt(ellipticCurveGF.getP()) + 1;
+	    tupleOutput = new Tuple[this.poinInput.length];
+	    System.out.println(titikBasis);
+	    System.out.println(Integer.toString(k));
+		for (int i=0; i< poinInput.length; i++) {
+			tupleOutput[i].setP1(ellipticCurveGF.perkalianPoin(k, titikBasis));
+			tupleOutput[i].setP2(ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey)));
 		}
 	}
 	
@@ -93,7 +93,8 @@ public class ElGamalECC {
 	}
 
 	public void setPoinInput(Point[] PoinInput) {
-		this.poinInput = PoinInput;
+		this.poinInput = new Point[PoinInput.length];
+		System.arraycopy( PoinInput, 0, this.poinInput, 0, PoinInput.length );
 	}
 
 	public Byte[] getOutput() {
@@ -140,5 +141,36 @@ public class ElGamalECC {
 		this.ellipticCurveGF = ellipticCurveGF;
 	}
 
+
+	public Tuple[] getTupleOutput() {
+		return tupleOutput;
+	}
+
+
+	public void setTupleOutput(Tuple[] tupleOutput) {
+		this.tupleOutput = tupleOutput;
+	}
+
+
+	public Point[] getPoinOutput() {
+		return poinOutput;
+	}
+
+
+	public void setPoinOutput(Point[] poinOutput) {
+		this.poinOutput = poinOutput;
+	}
+
+
+	public EllipticCurveGF getEllipticCurveGF() {
+		return ellipticCurveGF;
+	}
+
+
+	public void setEllipticCurveGF(EllipticCurveGF ellipticCurveGF) {
+		this.ellipticCurveGF = ellipticCurveGF;
+	}
+
+	
 	
 }
