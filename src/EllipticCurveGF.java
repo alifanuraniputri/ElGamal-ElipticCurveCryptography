@@ -1,5 +1,11 @@
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EllipticCurveGF {
 
@@ -110,16 +116,43 @@ public class EllipticCurveGF {
 		}
 		return y;
 	}
+	
+	public byte[] get_byte_file(File file)
+	{
+            byte[] databyte = null;
+            try {
+                databyte = Files.readAllBytes(file.toPath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return databyte;
+	}
+	
+	public Point[] arrayByteToPoint (byte[] filebyte){
+		int k = 10;
+        Point[] elliPoint = new Point[filebyte.length];
+        for(int i = 0; i < filebyte.length; i++){
+            elliPoint[i] = intToPoint((int)filebyte[i], k);
+        }
+        return elliPoint;
+    }
 
 	public static void main(String args[]) {
 		Point p1 = new Point(2, 4);
 		Point p2 = new Point(5, 9);
+		String s = "Elliptic Curve Cryptography recently gained a lot of  attention in industry. The principal attraction of ECC  compared to RSA is that it offers equal security for a  smaller bit size, thereby reducing processing overhead.";
+		byte stringByte[] = s.getBytes();
 		EllipticCurveGF el = new EllipticCurveGF();
 		System.out.println(el.penjumlahanPoin(p1, p2).toString());
 		System.out.println(el.penggandaanPoin(p1).toString());
 		System.out.println(el.perkalianPoin(3, p1));
 		System.out.println(el.isInCurve(3));
 		System.out.println(el.intToPoint(3, 10).toString());
+		Point elliPoint[] = el.arrayByteToPoint(stringByte);
+		for (Point P: elliPoint){
+			System.out.println(P.toString());
+		}
+		
 	}
 	
 	

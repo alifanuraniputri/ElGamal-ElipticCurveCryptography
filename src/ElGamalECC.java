@@ -1,3 +1,8 @@
+import java.awt.Point;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.logging.*;
+
 
 public class ElGamalECC {
 
@@ -6,6 +11,7 @@ public class ElGamalECC {
 	private String output;
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
+	
 	
 	public ElGamalECC() {
 		
@@ -66,6 +72,8 @@ public class ElGamalECC {
 	public void setOutputASCIIs(int[] outputASCIIs) {
 		this.outputASCIIs = outputASCIIs;
 	}
+	
+	
 	
 	
 }
