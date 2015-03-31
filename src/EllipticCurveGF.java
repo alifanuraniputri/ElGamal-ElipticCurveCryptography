@@ -12,6 +12,7 @@ public class EllipticCurveGF {
 	/** y^2 = x^3 + ax + b mod p **/
 	int a;
 	int b;
+	int k;
 	int p; // prime
 	
 
@@ -19,6 +20,7 @@ public class EllipticCurveGF {
 		// default value
 		a = 1;
 		b = 6;
+		k = 10;
 		p = 11;
 	}
 
@@ -26,6 +28,7 @@ public class EllipticCurveGF {
 		super();
 		this.a = a;
 		this.b = b;
+		this.k = k;
 		this.p = p;
 	}
 
@@ -94,7 +97,7 @@ public class EllipticCurveGF {
 	public Point intToPoint (int m, int k){
 		Point P = new Point();
 		int x = 0, y = 0;
-		for (int i=0; i<p; i++) {
+		for (int i=1; i<k; i++) {
 			x = m*k + i;
 			y = isInCurve(x);
 			if (y != p) 
@@ -137,13 +140,23 @@ public class EllipticCurveGF {
 	}
 	
 	public Point[] arrayByteToPoint (byte[] filebyte){
-		int k = 10;
         Point[] elliPoint = new Point[filebyte.length];
         for(int i = 0; i < filebyte.length; i++){
             elliPoint[i] = intToPoint((int)filebyte[i], k);
         }
         return elliPoint;
     }
+	
+	public byte[] arrayPointToByte (Point[] elliPoint){
+		byte[] pesan = new byte[elliPoint.length];
+		int psn;
+		for (int i = 0; i<pesan.length;i++){
+			psn = (elliPoint[i].x - 1)/k;
+			pesan[i] = (byte)psn;
+		}
+		
+		return pesan;
+	}
 
 	public static void main(String args[]) {
 		Point p1 = new Point(2, 4);
@@ -160,6 +173,8 @@ public class EllipticCurveGF {
 		for (Point P: elliPoint){
 			System.out.println(P.toString());
 		}
+		String en = new String(el.arrayPointToByte(elliPoint));
+		System.out.print(en);
 		
 	}
 

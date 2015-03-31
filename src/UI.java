@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
+
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -453,6 +455,9 @@ public class UI extends JApplet {
 						encryptdecryptButton.setEnabled(true);
 						saveCipher.setEnabled(false);
 						// TODO read as byte array set to elGamalECC input
+						byte[] plaintxtbyte = elgamalECC.getEllipticCurve().get_byte_file(file);
+						elgamalECC.setPoinInput(elgamalECC.getEllipticCurve().arrayByteToPoint(plaintxtbyte));
+						
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -602,7 +607,7 @@ public class UI extends JApplet {
 							p.x = Integer.parseInt(br.readLine());
 							p.y = Integer.parseInt(br.readLine());
 							elgamalECC.setTitikBasis(p);
-							elgamalECC.setElipticCurveGF(elCurve);
+							elgamalECC.setEllipticCurve(elCurve);
 						} else {
 							elgamalECC.setPrivateKey(Integer.parseInt(br.readLine()));
 							elCurve.setA(Integer.parseInt(br.readLine()));
@@ -612,7 +617,7 @@ public class UI extends JApplet {
 							p.x = Integer.parseInt(br.readLine());
 							p.y = Integer.parseInt(br.readLine());
 							elgamalECC.setTitikBasis(p);
-							elgamalECC.setElipticCurveGF(elCurve);
+							elgamalECC.setEllipticCurve(elCurve);
 						}
 						br.close();
 					} catch (IOException e1) {

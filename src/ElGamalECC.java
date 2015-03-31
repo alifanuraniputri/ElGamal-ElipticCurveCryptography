@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.logging.*;
 
@@ -9,12 +10,15 @@ public class ElGamalECC {
 	/* Cryptography */
 	private Byte input[];
 	private Byte output[];
+	private Point PoinInput[];
+	private Point PoinOutput[];
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
 	private int privateKey;
-	Point publicKey;
-	EllipticCurveGF elipticCurveGF;
-	Point titikBasis;
+	private Point publicKey;
+	private EllipticCurveGF ellipticCurveGF;
+	private Point titikBasis;
+
 	
 	public ElGamalECC() {
 		
@@ -60,6 +64,21 @@ public class ElGamalECC {
 	public void setInput(Byte[] input) {
 		this.input = input;
 	}
+	
+	/*public byte[] fullPointToByte(Point[] poinInput) {
+		byte[] arrayByte = new byte[poinInput.length*2];
+		for (int i=0,j=1; j<arrayByte.length; i+2, j+2) {
+			arrayByte[i] 
+		}
+	}*/
+	
+	public Point[] getPoinInput() {
+		return PoinInput;
+	}
+
+	public void setPoinInput(Point[] PoinInput) {
+		this.PoinInput = PoinInput;
+	}
 
 	public Byte[] getOutput() {
 		return output;
@@ -75,16 +94,6 @@ public class ElGamalECC {
 
 	public void setPrivateKey(int privateKey) {
 		this.privateKey = privateKey;
-	}
-
-
-	public EllipticCurveGF getElipticCurveGF() {
-		return elipticCurveGF;
-	}
-
-
-	public void setElipticCurveGF(EllipticCurveGF elipticCurveGF) {
-		this.elipticCurveGF = elipticCurveGF;
 	}
 
 
@@ -107,6 +116,13 @@ public class ElGamalECC {
 		this.publicKey = publicKey;
 	}
 
+	public EllipticCurveGF getEllipticCurve() {
+		return ellipticCurveGF;
+	}
+
+	public void setEllipticCurve(EllipticCurveGF ellipticCurveGF) {
+		this.ellipticCurveGF = ellipticCurveGF;
+	}
 
 	
 }
