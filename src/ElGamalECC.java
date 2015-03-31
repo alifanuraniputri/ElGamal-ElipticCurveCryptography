@@ -32,6 +32,7 @@ public class ElGamalECC {
 	    System.out.println(titikBasis);
 	    System.out.println(Integer.toString(k));
 		for (int i=0; i< poinInput.length; i++) {
+			tupleOutput[i] = new Tuple();
 			tupleOutput[i].setP1(ellipticCurveGF.perkalianPoin(k, titikBasis));
 			tupleOutput[i].setP2(ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey)));
 		}

@@ -89,6 +89,8 @@ public class EllipticCurveGF {
 		BigInteger bi2 = new BigInteger(Integer.toString(m));
 
 		// perform modInverse operation on bi1 using bi2
+		System.out.println(n);
+		System.out.println(m);
 		BigInteger bi3 = bi1.modInverse(bi2);
 		return bi3.intValue();
 	}
