@@ -598,7 +598,8 @@ public class UI extends JApplet {
 						br = new BufferedReader(new FileReader(file));
 						EllipticCurveGF elCurve = new EllipticCurveGF();
 						elgamalECC = new ElGamalECC();
-						if (isEncrypt) {
+						if (isEncrypt && fileChooser.getSelectedFile().getAbsolutePath()
+								.contains(".pub")) {
 							Point p = new Point();
 							p.x = Integer.parseInt(br.readLine());
 							p.y = Integer.parseInt(br.readLine());
@@ -612,7 +613,8 @@ public class UI extends JApplet {
 							p.y = Integer.parseInt(br.readLine());
 							elgamalECC.setTitikBasis(p);
 							elgamalECC.setEllipticCurve(elCurve);
-						} else {
+						} else if (!isEncrypt && fileChooser.getSelectedFile().getAbsolutePath()
+								.contains(".pri")){
 							elgamalECC.setPrivateKey(Integer.parseInt(br.readLine()));
 							kunciTextField.setText(Integer.toString(elgamalECC.getPrivateKey()));
 							elCurve.setA(Integer.parseInt(br.readLine()));
@@ -623,6 +625,9 @@ public class UI extends JApplet {
 							p.y = Integer.parseInt(br.readLine());
 							elgamalECC.setTitikBasis(p);
 							elgamalECC.setEllipticCurve(elCurve);
+						} else {
+							JOptionPane.showMessageDialog(getContentPane(),
+									".pub for public .pri for private");
 						}
 						br.close();
 					} catch (IOException e1) {

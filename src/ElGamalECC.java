@@ -1,8 +1,5 @@
 import java.awt.Point;
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.util.logging.*;
+import java.util.Random;
 
 
 public class ElGamalECC {
@@ -10,8 +7,9 @@ public class ElGamalECC {
 	/* Cryptography */
 	private Byte input[];
 	private Byte output[];
-	private Point PoinInput[];
-	private Point PoinOutput[];
+	private Point poinInput[];
+	private Tuple tupleOutput[];
+	private Point poinOutput[];
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
 	private int privateKey;
@@ -27,7 +25,16 @@ public class ElGamalECC {
 	
 	
 	public void encodeInput() {
-		// TODO array of ASCII to point byte array to point
+		Random rand = new Random();
+	    int k = rand.nextInt((ellipticCurveGF.getP() - 1) + 1) + 1;
+	    tupleOutput = new Tuple[poinInput.length];
+		for (int i=0; i< poinInput.length; i++) {
+			Point x = ellipticCurveGF.perkalianPoin(k, titikBasis);
+			Point y = ellipticCurveGF.penjumlahanPoin(poinInput[i], ellipticCurveGF.perkalianPoin(k, publicKey));
+			tupleOutput[i].setP1(x);
+			tupleOutput[i].setP2(y);
+
+		}
 	}
 	
 	public void decodeInput() {
@@ -90,11 +97,11 @@ public class ElGamalECC {
 	
 	
 	public Point[] getPoinInput() {
-		return PoinInput;
+		return poinInput;
 	}
 
 	public void setPoinInput(Point[] PoinInput) {
-		this.PoinInput = PoinInput;
+		this.poinInput = PoinInput;
 	}
 
 	public Byte[] getOutput() {
