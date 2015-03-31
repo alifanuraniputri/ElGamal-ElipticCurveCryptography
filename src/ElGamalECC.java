@@ -83,7 +83,4 @@ public class ElGamalECC {
 		this.publicKey = publicKey;
 	}
 	
-	
-	
-	
 }

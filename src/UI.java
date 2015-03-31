@@ -43,6 +43,8 @@ public class UI extends JApplet {
 	JTextArea inputTextArea;
 	JTextArea outputTextArea;
 	JTextField kunciTextField;
+	JTextField privateTextField;
+	JTextField publicTextField;
 	JTextField param_a;
 	JTextField param_b;
 	JTextField param_p;
@@ -53,6 +55,7 @@ public class UI extends JApplet {
 	JButton saveKeyPublic;
 	JButton encryptdecryptButton;
 	JButton saveCipher;
+	JButton generateKeyButton;
 	JTextField txt = new JTextField(20);
 	JPanel generateKey;
 	JPanel encryption ;
@@ -245,6 +248,29 @@ public class UI extends JApplet {
 		JLabel kunciPrivateLabel = new JLabel("Kunci Private");
 		kunciPrivateLabel.setBounds(20, 20, 80, 30);
 		kunciPrivateLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		privateTextField = new JTextField();
+		privateTextField.setBounds(20, 60, 400, 30);
+		privateTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		generateKeyButton = new JButton("Generate Key");
+		generateKeyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+		generateKeyButton.setBackground(Color.PINK);
+		generateKeyButton.setBounds(20, 190, 150, 30);
+		generateKeyButton.setOpaque(true);
+		
+		JLabel kunciPublicLabel = new JLabel("Kunci Publik");
+		kunciPublicLabel.setBounds(20, 230, 80, 30);
+		kunciPublicLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		publicTextField = new JTextField();
+		publicTextField.setBounds(20, 270, 400, 30);
+		publicTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		publicTextField.setEditable(false);
 
 		saveKeyPrivate = new JButton("Simpan Kunci Private");
 		saveKeyPrivate.addActionListener(new ActionListener() {
@@ -253,7 +279,7 @@ public class UI extends JApplet {
 			}
 		});
 		saveKeyPrivate.setBackground(Color.PINK);
-		saveKeyPrivate.setBounds(20, 190, 150, 30);
+		saveKeyPrivate.setBounds(20, 320, 150, 30);
 		saveKeyPrivate.setOpaque(true);
 		
 		saveKeyPublic = new JButton("Simpan Kunci Public");
@@ -263,7 +289,7 @@ public class UI extends JApplet {
 			}
 		});
 		saveKeyPublic.setBackground(Color.PINK);
-		saveKeyPublic.setBounds(180, 190, 150, 30);
+		saveKeyPublic.setBounds(180, 320, 150, 30);
 		saveKeyPublic.setOpaque(true);
 		/* ! Kunci ! */
 
@@ -333,6 +359,10 @@ public class UI extends JApplet {
 		generateKey.add(kunciPrivateLabel);
 		generateKey.add(saveKeyPrivate);
 		generateKey.add(saveKeyPublic);
+		generateKey.add(privateTextField);
+		generateKey.add(generateKeyButton);
+		generateKey.add(kunciPublicLabel);
+		generateKey.add(publicTextField);
 		
 		encryption = new JPanel();
 		encryption.setLayout(null);
