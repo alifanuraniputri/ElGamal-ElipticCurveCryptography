@@ -65,9 +65,9 @@ public class ElGamalECC {
 		this.input = input;
 	}
 	
-	public byte[] fullPointToByte(Point[] poinInput) {
+	public Byte[] fullPointToByte(Point[] poinInput) {
 		int j = 0, k = 1;
-		byte[] arrayByte = new byte[poinInput.length*2];
+		Byte[] arrayByte = new Byte[poinInput.length*2];
 		for (int i=0; i<poinInput.length; i++) {
 			arrayByte[j] = (byte)poinInput[i].x;
 			arrayByte[k] = (byte)poinInput[i].y;
@@ -76,16 +76,16 @@ public class ElGamalECC {
 		return arrayByte;
 	}
 	
-	/*public byte[] byteTo FullPoint(byte[] input) {
-		int j = 0, k = 1;
-		byte[] poin = new byte[input.length/2];
-		for (int i=0; i<poinInput.length; i++) {
-			arrayByte[j] = (byte)poinInput[i].x;
-			arrayByte[k] = (byte)poinInput[i].y;
-			j=+2; k=+2;
+	public Point[] byteToFullPoint(Byte[] input) {
+		int k = 0;
+		Point[] poin = new Point[input.length/2];
+		for (int i=0, j=1; j<input.length; i=+2, j=+2) {
+			poin[k].x = (int)input[i];
+			poin[k].y = (int)input[j];
+			k++;
 		}
-		return arrayByte;
-	}*/
+		return poin;
+	}
 	
 	
 	public Point[] getPoinInput() {
