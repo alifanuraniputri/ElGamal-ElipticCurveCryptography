@@ -425,7 +425,6 @@ public class UI extends JApplet {
 						// TODO read as byte array set to elGamalECC input
 						byte[] plaintxtbyte = elgamalECC.getEllipticCurve().get_byte_file(file);
 						elgamalECC.setPoinInput(elgamalECC.getEllipticCurve().arrayByteToPoint(plaintxtbyte));
-						//elgamalECC.setInput(elgamalECC.getPoinInput());
 						
 					} catch (IOException e1) {
 
