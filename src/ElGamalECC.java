@@ -7,30 +7,24 @@ import java.util.logging.*;
 public class ElGamalECC {
 
 	/* Cryptography */
-	private String input;
-	private String output;
+	private Byte input[];
+	private Byte output[];
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
-	
+	private int privateKey;
+	private int publicKey;
 	
 	public ElGamalECC() {
 		
 	}
 	
+	
 	public void encodeInput() {
-		inputASCIIs = new int[input.length()];
-		for (int i=0;i<input.length();i++){
-				inputASCIIs[i]= (int) input.charAt(i);
-		}
-		// TODO array of ASCII to point
+		// TODO array of ASCII to point byte array to point
 	}
 	
 	public void decodeInput() {
-		output="";
-		for (int i=0;i<outputASCIIs.length;i++) {
-			output=output+Character.toString((char)(outputASCIIs[i]));
-		}
-		// TODO point to Array of ASCII
+		// TODO array point to byte array
 	}
 	
 	public void encrypt() {
@@ -39,22 +33,6 @@ public class ElGamalECC {
 	
 	public void decrypt() {
 		// TODO all decryption
-	}
-
-	public String getInput() {
-		return input;
-	}
-
-	public void setInput(String input) {
-		this.input = input;
-	}
-
-	public String getOutput() {
-		return output;
-	}
-
-	public void setOutput(String output) {
-		this.output = output;
 	}
 
 	public int[] getInputASCIIs() {
@@ -71,6 +49,38 @@ public class ElGamalECC {
 
 	public void setOutputASCIIs(int[] outputASCIIs) {
 		this.outputASCIIs = outputASCIIs;
+	}
+
+	public Byte[] getInput() {
+		return input;
+	}
+
+	public void setInput(Byte[] input) {
+		this.input = input;
+	}
+
+	public Byte[] getOutput() {
+		return output;
+	}
+
+	public void setOutput(Byte[] output) {
+		this.output = output;
+	}
+
+	public int getPrivateKey() {
+		return privateKey;
+	}
+
+	public void setPrivateKey(int privateKey) {
+		this.privateKey = privateKey;
+	}
+
+	public int getPublicKey() {
+		return publicKey;
+	}
+
+	public void setPublicKey(int publicKey) {
+		this.publicKey = publicKey;
 	}
 	
 	

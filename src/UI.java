@@ -6,12 +6,16 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -31,33 +36,32 @@ import javax.swing.event.ChangeListener;
 public class UI extends JApplet {
 
 	ElGamalECC elgamalECC;
+	boolean isEncrypt;
 
 	/* GUI */
 	JButton fileBtn;
-	JButton fileBtn2;
 	JTextArea inputTextArea;
 	JTextArea outputTextArea;
-	JTextField kunciPrivateTextField;
-	JTextField kunciPublicTextField;
+	JTextField kunciTextField;
 	JTextField param_a;
 	JTextField param_b;
 	JTextField param_p;
 	JTextField param_Bx;
 	JTextField param_By;
-	JButton browsePrivateKey;
-	JButton browsePublicKey;
+	JButton browseKey;
 	JButton saveKeyPrivate;
 	JButton saveKeyPublic;
-	JButton encryptButton;
-	JButton decryptButton;
+	JButton encryptdecryptButton;
 	JButton saveCipher;
-	JButton saveCipher2;
 	JTextField txt = new JTextField(20);
 	JPanel generateKey;
 	JPanel encryption ;
 	JPanel decryption;
+	JRadioButton encryptRadio = new JRadioButton("Encrypt", true);
+    JRadioButton decryptRadio = new JRadioButton("Decrypt");
+    JLabel notifLabel;
 
-	private String[] title = { "Generate Key", "Encrypt", "Decrypt" };
+	private String[] title = { "Generate Key", "Encrypt & Decrypt" };
 
 	private JTabbedPane tabs = new JTabbedPane();
 
@@ -110,12 +114,6 @@ public class UI extends JApplet {
 		inputLabel.setBounds(20, 10, 100, 30);
 		inputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
-		JLabel inputLabel2;
-		inputLabel2 = new JLabel("Input File");
-		inputLabel2.setBounds(20, 10, 100, 30);
-		inputLabel2.setFont(new Font("Tahoma", Font.BOLD, 11));
-		/* ! Label ! */
-
 		/** Select File **/
 		fileBtn = new JButton("Select File ");
 		fileBtn.setBackground(Color.PINK);
@@ -126,16 +124,7 @@ public class UI extends JApplet {
 				readInput();
 			}
 		});
-		
-		fileBtn2 = new JButton("Select File ");
-		fileBtn2.setBackground(Color.PINK);
-		fileBtn2.setBounds(90, 10, 120, 30);
-		fileBtn2.setOpaque(true);
-		fileBtn2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				readInput();
-			}
-		});
+	
 		/* ! Select File */
 
 		/** Input File **/
@@ -152,40 +141,110 @@ public class UI extends JApplet {
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroll.setBounds(20, 60, 560, 150);
 		/* ! Input File ! */
+		
+		/** Key **/
+		browseKey = new JButton("Browse kunci");
+		browseKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+		browseKey.setBackground(Color.PINK);
+		browseKey.setBounds(210, 220, 100, 30);
+		browseKey.setOpaque(true);
+		
+		
+		notifLabel = new JLabel("Kunci Publik untuk Enkripsi");
+		notifLabel.setBounds(320, 220, 180, 30);
+		notifLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		kunciTextField = new JTextField();
+		kunciTextField.setBounds(20, 220, 170, 30);
+		kunciTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		/*! Key !*/
+		
+		/** Encrypt Decrypt **/
+		encryptRadio.setBounds(20, 260, 80, 30);
+		decryptRadio.setBounds(110, 260, 80, 30);
+		encryptRadio.setBackground(Color.WHITE);
+		decryptRadio.setBackground(Color.WHITE);
+		encryptRadio.setMnemonic(KeyEvent.VK_C);
+		decryptRadio.setMnemonic(KeyEvent.VK_M);
+		
+		encryptRadio.addItemListener(new ItemListener() {
+	         public void itemStateChanged(ItemEvent e) {         
+	             isEncrypt=true;
+	             notifLabel.setText("Kunci Publik untuk Enkripsi");
+	          }           
+	       });
+		
+		decryptRadio.addItemListener(new ItemListener() {
+	         public void itemStateChanged(ItemEvent e) {         
+	             isEncrypt=false;
+	             notifLabel.setText("Kunci Privat untuk Dekripsi");
+	          }           
+	       });
+		
+		ButtonGroup group = new ButtonGroup();
+		group.add(encryptRadio);
+		group.add(decryptRadio);
+		
+		
+		encryptdecryptButton = new JButton("Execute");
+		encryptdecryptButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					if (isEncrypt) {			
+						elgamalECC.setPublicKey(Integer.parseInt(kunciTextField.getText()));
+						elgamalECC.encrypt();
+					} else {
+						elgamalECC.setPrivateKey(Integer.parseInt(kunciTextField.getText()));
+						elgamalECC.decrypt();
+					}
+					saveCipher.setEnabled(true);
+				
+			}
+		});
+		encryptdecryptButton.setBackground(Color.PINK);
+		encryptdecryptButton.setBounds(200, 260, 80, 30);
+		encryptdecryptButton.setOpaque(true);
+		/*! Encrypt Dcrypt !*/
+		
+
+		/** Output **/
+		JLabel outputLabel = new JLabel("Output Text");
+		outputLabel.setBounds(20, 300, 100, 30);
+		outputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+
+		outputTextArea = new JTextArea();
+		outputTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		outputTextArea.setLineWrap(true);
+		outputTextArea.setWrapStyleWord(true);
+		outputTextArea.setVisible(true);
+		outputTextArea.setLineWrap(true); // at the end of line goes to new line
+		outputTextArea.setFocusable(true);
+
+		JScrollPane scroll2 = new JScrollPane(outputTextArea);
+		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll2.setBounds(20, 350, 560, 150);
+		/* ! Output ! */
+
+		/** Save **/
+		saveCipher = new JButton("Save Output to File");
+		saveCipher.setBounds(20, 510, 200, 30);
+		saveCipher.setEnabled(false);
+		saveCipher.setBackground(Color.PINK);
+		saveCipher.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveOutput();
+			}
+		});
+		
+		/* ! Save ! */
 
 		/** Kunci **/
 		JLabel kunciPrivateLabel = new JLabel("Kunci Private");
 		kunciPrivateLabel.setBounds(20, 20, 80, 30);
 		kunciPrivateLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-
-		browsePrivateKey = new JButton("browse kunci private");
-		browsePrivateKey.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-		browsePrivateKey.setBackground(Color.PINK);
-		browsePrivateKey.setBounds(110, 220, 130, 30);
-		browsePrivateKey.setOpaque(true);
-
-		browsePublicKey = new JButton("browse kunci publik");
-		browsePublicKey.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-		browsePublicKey.setBackground(Color.PINK);
-		browsePublicKey.setBounds(210, 220, 130, 30);
-		browsePublicKey.setOpaque(true);
-
-		kunciPrivateTextField = new JTextField();
-		kunciPrivateTextField.setBounds(20, 55, 170, 30);
-		kunciPrivateTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		
-		kunciPublicTextField = new JTextField();
-		kunciPublicTextField.setBounds(20, 220, 170, 30);
-		kunciPublicTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-
 
 		saveKeyPrivate = new JButton("Simpan Kunci Private");
 		saveKeyPrivate.addActionListener(new ActionListener() {
@@ -254,75 +313,7 @@ public class UI extends JApplet {
 		param_By.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		/* ! Parameter ! */
 
-		/** Enkripsi **/
-		encryptButton = new JButton("Enkripsi");
-		encryptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-					elgamalECC.encrypt();
-					saveCipher.setEnabled(true);
-				
-			}
-		});
-		encryptButton.setBackground(Color.PINK);
-		encryptButton.setBounds(20, 350, 80, 30);
-		encryptButton.setOpaque(true);
-		/* ! Enkripsi ! */
 
-		/** Dekripsi **/
-		decryptButton = new JButton("Dekripsi");
-		decryptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-					elgamalECC.decrypt();
-					saveCipher.setEnabled(true);
-				
-			}
-		});
-		decryptButton.setBackground(Color.PINK);
-		decryptButton.setBounds(110, 350, 80, 30);
-		decryptButton.setOpaque(true);
-		/** Dekripsi **/
-
-		/** Output **/
-		JLabel outputLabel = new JLabel("Output Text");
-		outputLabel.setBounds(20, 390, 100, 30);
-		outputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-
-		outputTextArea = new JTextArea();
-		outputTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		outputTextArea.setLineWrap(true);
-		outputTextArea.setWrapStyleWord(true);
-		outputTextArea.setVisible(true);
-		outputTextArea.setLineWrap(true); // at the end of line goes to new line
-		outputTextArea.setFocusable(true);
-
-		JScrollPane scroll2 = new JScrollPane(outputTextArea);
-		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroll2.setBounds(20, 430, 560, 150);
-		/* ! Output ! */
-
-		/** Save **/
-		saveCipher = new JButton("Save Output to File");
-		saveCipher.setBounds(20, 230, 200, 30);
-		saveCipher.setEnabled(false);
-		saveCipher.setBackground(Color.PINK);
-		saveCipher.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveOutput();
-			}
-		});
-		
-		saveCipher2 = new JButton("Save Output to File");
-		saveCipher2.setBounds(20, 230, 200, 30);
-		saveCipher2.setEnabled(false);
-		saveCipher2.setBackground(Color.PINK);
-		saveCipher2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveOutput();
-			}
-		});
-		/* ! Save ! */
 		
 		/** Panel **/
 		generateKey = new JPanel();
@@ -340,7 +331,6 @@ public class UI extends JApplet {
 		generateKey.add(param_By); 
 		generateKey.add(parameter);
 		generateKey.add(kunciPrivateLabel);
-		generateKey.add(kunciPrivateTextField);
 		generateKey.add(saveKeyPrivate);
 		generateKey.add(saveKeyPublic);
 		
@@ -350,24 +340,22 @@ public class UI extends JApplet {
 		encryption.add(fileBtn); 
 		encryption.add(inputLabel);
 		encryption.add(scroll);
-		encryption.add(browsePublicKey);
-		encryption.add(kunciPublicTextField);
+		encryption.add(scroll2);
+		encryption.add(browseKey);
+		encryption.add(kunciTextField);
 		encryption.add(saveCipher);
-		
-		
-		decryption = new JPanel();
-		decryption.setLayout(null);
-		decryption.setBackground(Color.WHITE);
-		decryption.add(inputLabel2);
-		decryption.add(fileBtn2); 
-		decryption.add(saveCipher2);
+		encryption.add(encryptdecryptButton);
+		encryption.add(outputLabel);
+		encryption.add(encryptRadio);
+		encryption.add(decryptRadio);
+		encryption.add(notifLabel);
+
 		/* ! Frame ! */
 		
 		/** TabbedPane **/
 		getContentPane().setBackground(Color.WHITE);
 		tabs.addTab(title[0],generateKey);
 		tabs.addTab(title[1], encryption);
-		tabs.addTab(title[2], decryption);
 		tabs.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				txt.setText("Tab selected: " + tabs.getSelectedIndex());
@@ -378,27 +366,6 @@ public class UI extends JApplet {
 		cp.add(tabs);
 		/*! TabbedPane !*/
 		
-		/*
-		 * getContentPane().add(fileBtn); getContentPane().add(inputLabel);
-		 * getContentPane().add(scroll);
-		 * getContentPane().add(kunciPrivateLabel);
-		 * getContentPane().add(kunciPublicLabel);
-		 * getContentPane().add(kunciPublicTextField);
-		 * getContentPane().add(kunciPrivateTextField);
-		 * getContentPane().add(encryptButton);
-		 * getContentPane().add(decryptButton);
-		 * getContentPane().add(browsePrivateKey);
-		 * getContentPane().add(browsePublicKey); getContentPane().add(scroll2);
-		 * getContentPane().add(outputLabel); getContentPane().add(saveCipher);
-		 * getContentPane().add(saveKey); getContentPane().add(label_a);
-		 * getContentPane().add(label_b); getContentPane().add(label_p);
-		 * getContentPane().add(label_Bx); getContentPane().add(label_By);
-		 * getContentPane().add(param_a); getContentPane().add(param_b);
-		 * getContentPane().add(param_p); getContentPane().add(param_Bx);
-		 * getContentPane().add(param_By); getContentPane().add(parameter);
-		 * encryptButton.setEnabled(false); decryptButton.setEnabled(false);
-		 */
-
 		elgamalECC = new ElGamalECC();
 	}
 
@@ -420,12 +387,11 @@ public class UI extends JApplet {
 							line = br.readLine();
 						}
 						String input = sb.toString();
-						elgamalECC.setInput(input);
 						br.close();
 						inputTextArea.setText(input);
-						encryptButton.setEnabled(true);
-						decryptButton.setEnabled(true);
+						encryptdecryptButton.setEnabled(true);
 						saveCipher.setEnabled(false);
+						// TODO read as byte array set to elGamalECC input
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -443,13 +409,8 @@ public class UI extends JApplet {
 				if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
 					try {
-						FileOutputStream out = new FileOutputStream(file);
-						String output = elgamalECC.getOutput();
-						for (int j = 0; j < output.length(); j++) {
-							char c = output.charAt(j);
-							out.write((int) c);
-						}
-					} catch (IOException e1) {
+						// TODO write output
+					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
