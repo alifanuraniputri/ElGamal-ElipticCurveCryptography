@@ -109,7 +109,4 @@ public class ElGamalECC {
 		this.ellipticCurveGF = ellipticCurveGF;
 	}
 	
-	
-	
-	
 }
