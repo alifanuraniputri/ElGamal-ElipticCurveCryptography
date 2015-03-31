@@ -3,16 +3,18 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Frame;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.ButtonGroup;
@@ -32,11 +34,17 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class UI extends JApplet {
 
 	ElGamalECC elgamalECC;
+	EllipticCurveGF curveForKey;
 	boolean isEncrypt;
+	int privateK;
+	Point publicK;
+	Point titikBasis;
 
 	/* GUI */
 	JButton fileBtn;
@@ -58,11 +66,11 @@ public class UI extends JApplet {
 	JButton generateKeyButton;
 	JTextField txt = new JTextField(20);
 	JPanel generateKey;
-	JPanel encryption ;
+	JPanel encryption;
 	JPanel decryption;
 	JRadioButton encryptRadio = new JRadioButton("Encrypt", true);
-    JRadioButton decryptRadio = new JRadioButton("Decrypt");
-    JLabel notifLabel;
+	JRadioButton decryptRadio = new JRadioButton("Decrypt");
+	JLabel notifLabel;
 
 	private String[] title = { "Generate Key", "Encrypt & Decrypt" };
 
@@ -111,12 +119,15 @@ public class UI extends JApplet {
 
 	private void guiInit() {
 
+		elgamalECC = new ElGamalECC();
+		curveForKey = new EllipticCurveGF();
+
 		/** Label **/
 		JLabel inputLabel;
 		inputLabel = new JLabel("Input File");
 		inputLabel.setBounds(20, 10, 100, 30);
 		inputLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
+
 		/** Select File **/
 		fileBtn = new JButton("Select File ");
 		fileBtn.setBackground(Color.PINK);
@@ -127,7 +138,7 @@ public class UI extends JApplet {
 				readInput();
 			}
 		});
-	
+
 		/* ! Select File */
 
 		/** Input File **/
@@ -144,28 +155,27 @@ public class UI extends JApplet {
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroll.setBounds(20, 60, 560, 150);
 		/* ! Input File ! */
-		
+
 		/** Key **/
 		browseKey = new JButton("Browse kunci");
 		browseKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				readKey();
 			}
 		});
 		browseKey.setBackground(Color.PINK);
 		browseKey.setBounds(210, 220, 100, 30);
 		browseKey.setOpaque(true);
-		
-		
+
 		notifLabel = new JLabel("Kunci Publik untuk Enkripsi");
 		notifLabel.setBounds(320, 220, 180, 30);
 		notifLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
+
 		kunciTextField = new JTextField();
 		kunciTextField.setBounds(20, 220, 170, 30);
 		kunciTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		/*! Key !*/
-		
+		/* ! Key ! */
+
 		/** Encrypt Decrypt **/
 		encryptRadio.setBounds(20, 260, 80, 30);
 		decryptRadio.setBounds(110, 260, 80, 30);
@@ -173,45 +183,42 @@ public class UI extends JApplet {
 		decryptRadio.setBackground(Color.WHITE);
 		encryptRadio.setMnemonic(KeyEvent.VK_C);
 		decryptRadio.setMnemonic(KeyEvent.VK_M);
-		
+
 		encryptRadio.addItemListener(new ItemListener() {
-	         public void itemStateChanged(ItemEvent e) {         
-	             isEncrypt=true;
-	             notifLabel.setText("Kunci Publik untuk Enkripsi");
-	          }           
-	       });
-		
+			public void itemStateChanged(ItemEvent e) {
+				isEncrypt = true;
+				notifLabel.setText("Kunci Publik untuk Enkripsi");
+			}
+		});
+
 		decryptRadio.addItemListener(new ItemListener() {
-	         public void itemStateChanged(ItemEvent e) {         
-	             isEncrypt=false;
-	             notifLabel.setText("Kunci Privat untuk Dekripsi");
-	          }           
-	       });
-		
+			public void itemStateChanged(ItemEvent e) {
+				isEncrypt = false;
+				notifLabel.setText("Kunci Privat untuk Dekripsi");
+			}
+		});
+
 		ButtonGroup group = new ButtonGroup();
 		group.add(encryptRadio);
 		group.add(decryptRadio);
-		
-		
+
 		encryptdecryptButton = new JButton("Execute");
 		encryptdecryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-					if (isEncrypt) {			
-						elgamalECC.setPublicKey(Integer.parseInt(kunciTextField.getText()));
-						elgamalECC.encrypt();
-					} else {
-						elgamalECC.setPrivateKey(Integer.parseInt(kunciTextField.getText()));
-						elgamalECC.decrypt();
-					}
-					saveCipher.setEnabled(true);
-				
+				if (isEncrypt) {
+					elgamalECC.encrypt();
+				} else {
+					;
+					elgamalECC.decrypt();
+				}
+				saveCipher.setEnabled(true);
+
 			}
 		});
 		encryptdecryptButton.setBackground(Color.PINK);
 		encryptdecryptButton.setBounds(200, 260, 80, 30);
 		encryptdecryptButton.setOpaque(true);
-		/*! Encrypt Dcrypt !*/
-		
+		/* ! Encrypt Dcrypt ! */
 
 		/** Output **/
 		JLabel outputLabel = new JLabel("Output Text");
@@ -241,32 +248,49 @@ public class UI extends JApplet {
 				saveOutput();
 			}
 		});
-		
+
 		/* ! Save ! */
 
 		/** Kunci **/
 		JLabel kunciPrivateLabel = new JLabel("Kunci Private");
 		kunciPrivateLabel.setBounds(20, 20, 80, 30);
 		kunciPrivateLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
+
 		privateTextField = new JTextField();
 		privateTextField.setBounds(20, 60, 400, 30);
 		privateTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		
+
 		generateKeyButton = new JButton("Generate Key");
 		generateKeyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				curveForKey.setA(Integer.parseInt(param_a.getText()));
+				curveForKey.setB(Integer.parseInt(param_b.getText()));
+				curveForKey.setP(Integer.parseInt(param_p.getText()));
+				int xb = Integer.parseInt(param_Bx.getText());
+				int yb = Integer.parseInt(param_By.getText());
+				if (curveForKey.isXYinCurve(xb, yb)) {
+					titikBasis = new Point(xb, yb);
+					Point kunciPublik = curveForKey.perkalianPoin(
+							Integer.parseInt(privateTextField.getText()),
+							titikBasis);
+					publicTextField.setText(kunciPublik.toString());
+					privateK = Integer.parseInt(privateTextField.getText());
+					publicK = kunciPublik;
+				} else {
+					JOptionPane.showMessageDialog(getContentPane(),
+							"titik basis B tidak terdapat dalam kurva");
+				}
 
 			}
 		});
 		generateKeyButton.setBackground(Color.PINK);
 		generateKeyButton.setBounds(20, 190, 150, 30);
 		generateKeyButton.setOpaque(true);
-		
+
 		JLabel kunciPublicLabel = new JLabel("Kunci Publik");
 		kunciPublicLabel.setBounds(20, 230, 80, 30);
 		kunciPublicLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
+
 		publicTextField = new JTextField();
 		publicTextField.setBounds(20, 270, 400, 30);
 		publicTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -275,17 +299,27 @@ public class UI extends JApplet {
 		saveKeyPrivate = new JButton("Simpan Kunci Private");
 		saveKeyPrivate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				if (publicTextField.getText() != null) {
+					savePrivate();
+				} else {
+					JOptionPane.showMessageDialog(getContentPane(),
+							"generate key dahulu ");
+				}
 			}
 		});
 		saveKeyPrivate.setBackground(Color.PINK);
 		saveKeyPrivate.setBounds(20, 320, 150, 30);
 		saveKeyPrivate.setOpaque(true);
-		
+
 		saveKeyPublic = new JButton("Simpan Kunci Public");
 		saveKeyPublic.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				if (publicTextField.getText() != null) {
+					savePublic();
+				} else {
+					JOptionPane.showMessageDialog(getContentPane(),
+							"generate key dahulu ");
+				}
 			}
 		});
 		saveKeyPublic.setBackground(Color.PINK);
@@ -339,8 +373,6 @@ public class UI extends JApplet {
 		param_By.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		/* ! Parameter ! */
 
-
-		
 		/** Panel **/
 		generateKey = new JPanel();
 		generateKey.setBackground(Color.WHITE);
@@ -348,13 +380,13 @@ public class UI extends JApplet {
 		generateKey.add(label_a);
 		generateKey.add(label_b);
 		generateKey.add(label_p);
-		generateKey.add(label_Bx); 
+		generateKey.add(label_Bx);
 		generateKey.add(label_By);
-		generateKey.add(param_a); 
+		generateKey.add(param_a);
 		generateKey.add(param_b);
-		generateKey.add(param_p); 
+		generateKey.add(param_p);
 		generateKey.add(param_Bx);
-		generateKey.add(param_By); 
+		generateKey.add(param_By);
 		generateKey.add(parameter);
 		generateKey.add(kunciPrivateLabel);
 		generateKey.add(saveKeyPrivate);
@@ -363,11 +395,11 @@ public class UI extends JApplet {
 		generateKey.add(generateKeyButton);
 		generateKey.add(kunciPublicLabel);
 		generateKey.add(publicTextField);
-		
+
 		encryption = new JPanel();
 		encryption.setLayout(null);
 		encryption.setBackground(Color.WHITE);
-		encryption.add(fileBtn); 
+		encryption.add(fileBtn);
 		encryption.add(inputLabel);
 		encryption.add(scroll);
 		encryption.add(scroll2);
@@ -381,10 +413,10 @@ public class UI extends JApplet {
 		encryption.add(notifLabel);
 
 		/* ! Frame ! */
-		
+
 		/** TabbedPane **/
 		getContentPane().setBackground(Color.WHITE);
-		tabs.addTab(title[0],generateKey);
+		tabs.addTab(title[0], generateKey);
 		tabs.addTab(title[1], encryption);
 		tabs.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -394,9 +426,8 @@ public class UI extends JApplet {
 		Container cp = getContentPane();
 		cp.add(BorderLayout.SOUTH, txt);
 		cp.add(tabs);
-		/*! TabbedPane !*/
-		
-		elgamalECC = new ElGamalECC();
+		/* ! TabbedPane ! */
+
 	}
 
 	public void readInput() {
@@ -448,5 +479,149 @@ public class UI extends JApplet {
 			}
 
 		});
+	}
+
+	public void savePrivate() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				final JFileChooser fileChooser = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("PRI (.pri)",
+						"pri");
+				fileChooser.setFileFilter(filter);
+				if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					try {
+						FileWriter out;
+						if (fileChooser.getSelectedFile().getAbsolutePath()
+								.contains(".pri"))
+							out = new FileWriter(fileChooser.getSelectedFile()
+									.getAbsolutePath());
+						else
+							out = new FileWriter(fileChooser.getSelectedFile()
+									.getAbsolutePath() + ".pri");
+						String sPrivate = Integer.toString(privateK);
+						BufferedWriter bw = new BufferedWriter(out);
+						String sPublikX = Integer.toString(publicK.x);
+						bw.write(sPrivate);
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getA()));
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getB()));
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getP()));
+						bw.write('\n');
+						bw.write(Integer.toString(titikBasis.x));
+						bw.write('\n');
+						bw.write(Integer.toString(titikBasis.y));
+						bw.close();
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Kunci Privat Tersimpan");
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+
+		});
+	}
+
+	public void savePublic() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				final JFileChooser fileChooser = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("PUB (.pub)",
+						"pub");
+				fileChooser.setFileFilter(filter);
+				if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					try {
+						FileWriter out;
+						if (fileChooser.getSelectedFile().getAbsolutePath()
+								.contains(".pub"))
+							out = new FileWriter(fileChooser.getSelectedFile()
+									.getAbsolutePath());
+						else
+							out = new FileWriter(fileChooser.getSelectedFile()
+									.getAbsolutePath() + ".pub");
+						BufferedWriter bw = new BufferedWriter(out);
+						String sPublikX = Integer.toString(publicK.x);
+						bw.write(sPublikX);
+						bw.write('\n');
+						String sPublikY = Integer.toString(publicK.y);
+						bw.write(sPublikY);
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getA()));
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getB()));
+						bw.write('\n');
+						bw.write(Integer.toString(curveForKey.getP()));
+						bw.write('\n');
+						bw.write(Integer.toString(titikBasis.x));
+						bw.write('\n');
+						bw.write(Integer.toString(titikBasis.y));
+						bw.close();
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Kunci Privat Tersimpan");
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+
+		});
+	}
+
+	public void readKey() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				final JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					try {
+						BufferedReader br = null;
+						String s;
+						br = new BufferedReader(new FileReader(file));
+						EllipticCurveGF elCurve = new EllipticCurveGF();
+						elgamalECC = new ElGamalECC();
+						if (isEncrypt) {
+							Point p = new Point();
+							p.x = Integer.parseInt(br.readLine());
+							p.y = Integer.parseInt(br.readLine());
+							elgamalECC.setPublicKey(p);
+							elCurve.setA(Integer.parseInt(br.readLine()));
+							elCurve.setB(Integer.parseInt(br.readLine()));
+							elCurve.setP(Integer.parseInt(br.readLine()));
+							p = new Point();
+							p.x = Integer.parseInt(br.readLine());
+							p.y = Integer.parseInt(br.readLine());
+							elgamalECC.setTitikBasis(p);
+							elgamalECC.setElipticCurveGF(elCurve);
+						} else {
+							elgamalECC.setPrivateKey(Integer.parseInt(br.readLine()));
+							elCurve.setA(Integer.parseInt(br.readLine()));
+							elCurve.setB(Integer.parseInt(br.readLine()));
+							elCurve.setP(Integer.parseInt(br.readLine()));
+							Point p = new Point();
+							p.x = Integer.parseInt(br.readLine());
+							p.y = Integer.parseInt(br.readLine());
+							elgamalECC.setTitikBasis(p);
+							elgamalECC.setElipticCurveGF(elCurve);
+						}
+						br.close();
+					} catch (IOException e1) {
+
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+
 	}
 }

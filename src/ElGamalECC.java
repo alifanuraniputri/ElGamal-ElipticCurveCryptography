@@ -12,7 +12,9 @@ public class ElGamalECC {
 	private int[] inputASCIIs;
 	private int[] outputASCIIs;
 	private int privateKey;
-	private int publicKey;
+	Point publicKey;
+	EllipticCurveGF elipticCurveGF;
+	Point titikBasis;
 	
 	public ElGamalECC() {
 		
@@ -75,12 +77,36 @@ public class ElGamalECC {
 		this.privateKey = privateKey;
 	}
 
-	public int getPublicKey() {
+
+	public EllipticCurveGF getElipticCurveGF() {
+		return elipticCurveGF;
+	}
+
+
+	public void setElipticCurveGF(EllipticCurveGF elipticCurveGF) {
+		this.elipticCurveGF = elipticCurveGF;
+	}
+
+
+	public Point getTitikBasis() {
+		return titikBasis;
+	}
+
+
+	public void setTitikBasis(Point titikBasis) {
+		this.titikBasis = titikBasis;
+	}
+
+
+	public Point getPublicKey() {
 		return publicKey;
 	}
 
-	public void setPublicKey(int publicKey) {
+
+	public void setPublicKey(Point publicKey) {
 		this.publicKey = publicKey;
 	}
+
+
 	
 }

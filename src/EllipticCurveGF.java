@@ -13,6 +13,7 @@ public class EllipticCurveGF {
 	int a;
 	int b;
 	int p; // prime
+	
 
 	public EllipticCurveGF() {
 		// default value
@@ -117,6 +118,13 @@ public class EllipticCurveGF {
 		return y;
 	}
 	
+	public boolean isXYinCurve(int bx, int by) {
+		if (modulo((by*by-(modulo((bx*bx*bx + a*bx + b),p)) ),p) == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	public byte[] get_byte_file(File file)
 	{
             byte[] databyte = null;
@@ -153,6 +161,30 @@ public class EllipticCurveGF {
 			System.out.println(P.toString());
 		}
 		
+	}
+
+	public int getA() {
+		return a;
+	}
+
+	public void setA(int a) {
+		this.a = a;
+	}
+
+	public int getB() {
+		return b;
+	}
+
+	public void setB(int b) {
+		this.b = b;
+	}
+
+	public int getP() {
+		return p;
+	}
+
+	public void setP(int p) {
+		this.p = p;
 	}
 	
 	
