@@ -21,6 +21,7 @@ public class ElGamalECC {
 
 	
 	public ElGamalECC() {
+		ellipticCurveGF = new EllipticCurveGF();
 		
 	}
 	
@@ -65,13 +66,28 @@ public class ElGamalECC {
 		this.input = input;
 	}
 	
-	/*public byte[] fullPointToByte(Point[] poinInput) {
+	public byte[] fullPointToByte(Point[] poinInput) {
 		int j = 0, k = 1;
 		byte[] arrayByte = new byte[poinInput.length*2];
 		for (int i=0; i<poinInput.length; i++) {
-			arrayByte[j] = 
+			arrayByte[j] = (byte)poinInput[i].x;
+			arrayByte[k] = (byte)poinInput[i].y;
+			j=+2; k=+2;
 		}
+		return arrayByte;
+	}
+	
+	/*public byte[] byteTo FullPoint(byte[] input) {
+		int j = 0, k = 1;
+		byte[] poin = new byte[input.length/2];
+		for (int i=0; i<poinInput.length; i++) {
+			arrayByte[j] = (byte)poinInput[i].x;
+			arrayByte[k] = (byte)poinInput[i].y;
+			j=+2; k=+2;
+		}
+		return arrayByte;
 	}*/
+	
 	
 	public Point[] getPoinInput() {
 		return PoinInput;
