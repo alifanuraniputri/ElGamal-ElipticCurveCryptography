@@ -120,6 +120,8 @@ public class UI extends JApplet {
 	}
 
 	private void guiInit() {
+		
+		isEncrypt=true;
 
 		elgamalECC = new ElGamalECC();
 		curveForKey = new EllipticCurveGF();
@@ -176,6 +178,7 @@ public class UI extends JApplet {
 		kunciTextField = new JTextField();
 		kunciTextField.setBounds(20, 220, 170, 30);
 		kunciTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		kunciTextField.setEditable(false);
 		/* ! Key ! */
 
 		/** Encrypt Decrypt **/
@@ -599,6 +602,7 @@ public class UI extends JApplet {
 							Point p = new Point();
 							p.x = Integer.parseInt(br.readLine());
 							p.y = Integer.parseInt(br.readLine());
+							kunciTextField.setText(p.toString());
 							elgamalECC.setPublicKey(p);
 							elCurve.setA(Integer.parseInt(br.readLine()));
 							elCurve.setB(Integer.parseInt(br.readLine()));
@@ -610,6 +614,7 @@ public class UI extends JApplet {
 							elgamalECC.setEllipticCurve(elCurve);
 						} else {
 							elgamalECC.setPrivateKey(Integer.parseInt(br.readLine()));
+							kunciTextField.setText(Integer.toString(elgamalECC.getPrivateKey()));
 							elCurve.setA(Integer.parseInt(br.readLine()));
 							elCurve.setB(Integer.parseInt(br.readLine()));
 							elCurve.setP(Integer.parseInt(br.readLine()));
