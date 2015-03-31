@@ -83,6 +83,25 @@ public class EllipticCurveGF {
 		BigInteger bi3 = bi1.modInverse(bi2);
 		return bi3.intValue();
 	}
+	
+	public Point intToPoint (int n, int k){
+		Point p = new Point();
+		return p;
+		
+	}
+	
+	public int isInCurve(int x) {
+		int y=p;
+		boolean found = false;
+		for (int i=0; i<p; i++) {
+			if (modulo((i*i-(modulo((x*x*x + a*x + b),p)) ),p) == 0) {
+				found = true;
+				y=i;
+				break;
+			}
+		}
+		return y;
+	}
 
 	public static void main(String args[]) {
 		Point p1 = new Point(2, 4);
@@ -91,6 +110,9 @@ public class EllipticCurveGF {
 		System.out.println(el.penjumlahanPoin(p1, p2).toString());
 		System.out.println(el.penggandaanPoin(p1).toString());
 		System.out.println(el.perkalianPoin(3, p1));
+		System.out.println(el.isInCurve(3));
 	}
+	
+	
 
 }
