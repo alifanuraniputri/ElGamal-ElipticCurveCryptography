@@ -31,6 +31,7 @@ public class ElGamalECC {
 
 		int  k = rand.nextInt(ellipticCurveGF.getP()) + 1;
 	    tuples = new Tuple[this.poinInput.length];
+	    System.out.println("a: "+ellipticCurveGF.getA() + "b : "+ ellipticCurveGF.getB() + "p: " + ellipticCurveGF.getP());
 	    System.out.println(titikBasis);
 	    System.out.println(Integer.toString(k));
 		for (int i=0; i< poinInput.length; i++) {

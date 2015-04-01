@@ -82,10 +82,35 @@ public class EllipticCurveGF {
 
 	public int modulo(int n, int m) {
 		return (n < 0) ? (n % m + m) % m : (n % m);
-	}
+	} 
+	
+	int[] gcd(int p, int q) {
+	      if (q == 0)
+	         return new int[] { p, 1, 0 };
+	      int[] vals = gcd(q, modulo(p,q));
+	      int d = vals[0];
+	      int a = vals[2];
+	      int b = vals[1] - (p / q) * vals[2];
+	      return new int[] { d, a, b };
+	   }
 
+	   int inv_modulo2(int k, int n) {
+	      int[] vals = gcd(k, n);
+	      int d = vals[0];
+	      int a = vals[1];
+	      int b = vals[2];
+	      if (d > 1) { System.out.println("Inverse does not exist."); return 0; }
+	      if (a > 0) return a;
+	      return n + a;
+	   }
+	
+	
 	public int inv_modulo(int n, int m) {
-		if ((n % m ==0 || m % n ==0) && n !=0 && m !=0) {
+		
+		/*
+		int[] vals = gcd(n, m);
+	     int d = vals[0];
+		if ( d>1 && n !=0 && m !=0) {
 			if (n>m) {
 				n = n/m;
 				m = 1;
@@ -94,13 +119,14 @@ public class EllipticCurveGF {
 				n=1;
 			}
 		}
+		*/
 		BigInteger bi1 = new BigInteger(Integer.toString(n));
 		BigInteger bi2 = new BigInteger(Integer.toString(m));
 
 		// perform modInverse operation on bi1 using bi2
 		BigInteger bi3 = bi1.modInverse(bi2);
 		return bi3.intValue();
-	}
+	} 
 	
 	public Point intToPoint (int m, int k){
 		Point P = new Point();
