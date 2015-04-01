@@ -147,9 +147,12 @@ public class EllipticCurveGF {
 		boolean found = false;
 		for (int i=0; i<p; i++) {
 			if (modulo((i*i-(modulo((x*x*x + a*x + b),p)) ),p) == 0) {
-				found = true;
-				y=i;
-				break;
+				if (gcd(x,i)[0]==1) {
+					found = true;
+					y=i;
+					break;
+				}
+				
 			}
 		}
 		return y;
