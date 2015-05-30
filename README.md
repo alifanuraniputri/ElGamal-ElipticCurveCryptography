@@ -1,3 +1,5 @@
+{sorry, many errors here}
+
 # ElGamal-ElipticCurveCryptography
 El Gamal Eliptic Curve Cryptography, made for 'Tucil 3' IF4020 Kriptografi, 2015
 
